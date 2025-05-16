@@ -1,2 +1,55 @@
-<h1>Hola</h1>
+{% extends 'base.html' %}
 
+{% block content %}
+  <!-- Formulario: utiliza clases de Bootstrap -->
+  <form method="post" class="d-flex mb-4">
+    <input
+      type="text"
+      name="title"
+      class="form-control me-2"
+      placeholder="Nueva tarea..."
+      required>
+    <button type="submit" class="btn btn-success">Agregar</button>
+  </form>
+
+  <!-- Tabla responsive -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Tarea</th>
+          <th style="width:120px;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+        <tr>
+          <td class="{% if task.completed %}text-decoration-line-through text-muted{% endif %}">
+            {{ task.title }}
+          </td>
+          <td>
+            <!-- Botón toggle -->
+            <a
+              href="{{ url_for('toggle', task_id=task.id) }}"
+              class="btn btn-sm {% if task.completed %}btn-warning{% else %}btn-primary{% endif %} me-1"
+              title="Marcar {% if task.completed %}pendiente{% else %}completa{% endif %}">
+              {% if task.completed %}↺{% else %}✓{% endif %}
+            </a>
+            <!-- Botón eliminar -->
+            <a
+              href="{{ url_for('delete', task_id=task.id) }}"
+              class="btn btn-sm btn-danger"
+              title="Eliminar tarea">
+              🗑️
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2" class="text-center">No hay tareas aún.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
