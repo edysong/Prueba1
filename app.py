@@ -13,10 +13,29 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-   return render_template('index.html')
+    """
+    - GET  → muestra lista de tareas.
+    - POST → recibe 'title' del formulario y crea nueva tarea.
+    """
+    conn = get_db_connection()
+
+    if request.method == 'POST':
+        new_title = request.form['title'].strip()
+        # Si el usuario escribió algo, insertarlo
+        if new_title:
+            conn.execute(
+                'INSERT INTO tasks (title) VALUES (?)',
+                (new_title,)
+            )
+            conn.commit()
+        return redirect(url_for('index'))
+
+    # Para GET: obtenemos todas las tareas
+    tasks = conn.execute('SELECT * FROM tasks').fetchall()
+    conn.close()
+    return render_template('index.html', tasks=tasks)
 
 @app.route('/toggle/<int:task_id>')
 def toggle(task_id):
