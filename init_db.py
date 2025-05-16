@@ -1,7 +1,13 @@
-# init_db.py
 import sqlite3
 
 def init_db():
+    """
+    - Conecta (o crea) 'database.db'.
+    - Crea tabla 'tasks' con columnas:
+        id         → clave primaria autoincremental
+        title      → texto de la tarea (no nulo)
+        completed  → entero 0/1 indicando estado
+    """
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
     c.execute('''
@@ -13,7 +19,7 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
-    print("Base de datos inicializada.")
+    print("✅ Base de datos inicializada.")
 
 if __name__ == '__main__':
     init_db()
